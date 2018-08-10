@@ -208,7 +208,10 @@ pwcopy(struct passwd *pw)
 	struct passwd *copy = xcalloc(1, sizeof(*copy));
 
 	copy->pw_name = xstrdup(pw->pw_name);
-	copy->pw_passwd = xstrdup(pw->pw_passwd);
+	/* Android does not do passwords and passes NULL for them. This breaks strlen */
+	if (pw->pw_passwd) {
+		copy->pw_passwd = xstrdup(pw->pw_passwd);
+	}
 #ifdef HAVE_STRUCT_PASSWD_PW_GECOS
 	copy->pw_gecos = xstrdup(pw->pw_gecos);
 #endif
